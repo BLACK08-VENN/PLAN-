@@ -71,6 +71,9 @@ let worldKey = null, state = 'menu', camera = 0, stars = 0, last = 0, invulnerab
 let player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
 let seen = new Set(), collected = new Set(), defeated = new Set(), particles = [];
 let soundOn = true, audioContext = null;
+const pickupAudio = new Audio('coin-pickup.mp3');
+pickupAudio.preload = 'auto';
+pickupAudio.volume = .28;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function audio() {
@@ -92,7 +95,12 @@ function tone(freq, duration = .12, volume = .025, type = 'sine', delay = 0) {
 }
 function sound(kind) {
   if (kind === 'jump') tone(330, .1, .018);
-  if (kind === 'star') { tone(620, .09, .019); tone(850, .13, .016, 'sine', .065); }
+  if (kind === 'star' && soundOn) {
+    if (pickupAudio.readyState >= 2) {
+      pickupAudio.currentTime = 0;
+      pickupAudio.play().catch(() => { tone(620, .09, .019); tone(850, .13, .016, 'sine', .065); });
+    } else { tone(620, .09, .019); tone(850, .13, .016, 'sine', .065); }
+  }
   if (kind === 'stomp') { tone(190, .09, .025, 'triangle'); tone(470, .15, .019, 'sine', .07); }
   if (kind === 'bump') tone(160, .1, .012, 'sine');
   if (kind === 'tip') { tone(450, .11, .015); tone(570, .15, .013, 'sine', .1); }
@@ -100,6 +108,7 @@ function sound(kind) {
 }
 soundToggle.addEventListener('click', () => {
   soundOn = !soundOn;
+  if (!soundOn) { pickupAudio.pause(); pickupAudio.currentTime = 0; }
   soundToggle.textContent = soundOn ? 'Sound on' : 'Sound off';
   soundToggle.setAttribute('aria-pressed', String(soundOn));
   soundToggle.setAttribute('aria-label', soundOn ? 'Mute game sounds' : 'Turn on game sounds');
