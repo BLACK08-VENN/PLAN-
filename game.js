@@ -74,6 +74,9 @@ let soundOn = true, audioContext = null;
 const pickupAudio = new Audio('coin-pickup.mp3');
 pickupAudio.preload = 'auto';
 pickupAudio.volume = .28;
+const monsterHitAudio = new Audio('monster-hit.mp3');
+monsterHitAudio.preload = 'auto';
+monsterHitAudio.volume = .24;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function audio() {
@@ -101,14 +104,21 @@ function sound(kind) {
       pickupAudio.play().catch(() => { tone(620, .09, .019); tone(850, .13, .016, 'sine', .065); });
     } else { tone(620, .09, .019); tone(850, .13, .016, 'sine', .065); }
   }
-  if (kind === 'stomp') { tone(190, .09, .025, 'triangle'); tone(470, .15, .019, 'sine', .07); }
+  if (kind === 'stomp' && soundOn) {
+    if (monsterHitAudio.readyState >= 2) {
+      monsterHitAudio.currentTime = 0;
+      monsterHitAudio.play().catch(() => { tone(190, .09, .025, 'triangle'); tone(470, .15, .019, 'sine', .07); });
+    } else { tone(190, .09, .025, 'triangle'); tone(470, .15, .019, 'sine', .07); }
+  }
   if (kind === 'bump') tone(160, .1, .012, 'sine');
   if (kind === 'tip') { tone(450, .11, .015); tone(570, .15, .013, 'sine', .1); }
   if (kind === 'finish') [440, 550, 660].forEach((f, i) => tone(f, .2, .021, 'sine', i * .12));
 }
 soundToggle.addEventListener('click', () => {
   soundOn = !soundOn;
-  if (!soundOn) { pickupAudio.pause(); pickupAudio.currentTime = 0; }
+  if (!soundOn) {
+    for (const clip of [pickupAudio, monsterHitAudio]) { clip.pause(); clip.currentTime = 0; }
+  }
   soundToggle.textContent = soundOn ? 'Sound on' : 'Sound off';
   soundToggle.setAttribute('aria-pressed', String(soundOn));
   soundToggle.setAttribute('aria-label', soundOn ? 'Mute game sounds' : 'Turn on game sounds');
