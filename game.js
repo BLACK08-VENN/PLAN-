@@ -46,10 +46,11 @@ const card = document.getElementById('card');
 const soundToggle = document.getElementById('soundToggle');
 const keys = { left: false, right: false, jump: false };
 const W = window.innerWidth <= 680 ? 480 : 960;
-const H = 450, GROUND = 360, END = 2820;
+const H = W === 480 ? 570 : 450, GROUND = H - 90, END = 2820;
 const dpr = Math.min(window.devicePixelRatio || 1, 2);
 canvas.width = Math.round(W * dpr);
 canvas.height = Math.round(H * dpr);
+canvas.style.aspectRatio = `${W}/${H}`;
 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 const lionHero = new Image(); lionHero.src = 'lion-hero.webp';
@@ -57,13 +58,13 @@ const monsterAtlas = new Image(); monsterAtlas.src = 'monsters.webp';
 const environment = new Image(); environment.src = 'environment.webp';
 const props = new Image(); props.src = 'props.webp';
 const platforms = [
-  { x: 340, y: 288, w: 160 }, { x: 810, y: 275, w: 160 },
-  { x: 1270, y: 290, w: 170 }, { x: 1730, y: 273, w: 160 },
-  { x: 2220, y: 290, w: 170 }
+  { x: 340, y: GROUND - 72, w: 160 }, { x: 810, y: GROUND - 85, w: 160 },
+  { x: 1270, y: GROUND - 70, w: 170 }, { x: 1730, y: GROUND - 87, w: 160 },
+  { x: 2220, y: GROUND - 70, w: 170 }
 ];
 const blocks = [490, 1010, 1810, 2450];
 const coinPositions = [190, 280, 370, 440, 575, 690, 850, 930, 1080, 1170, 1330, 1410, 1550, 1660, 1780, 1870, 2020, 2140, 2280, 2370, 2500, 2620]
-  .map((x, i) => ({ x, y: i % 4 >= 2 ? 247 : GROUND - 75 }));
+  .map((x, i) => ({ x, y: i % 4 >= 2 ? GROUND - 113 : GROUND - 75 }));
 const stops = [650, 1450, 2250];
 const monsterPositions = [760, 1200, 1970, 2580];
 let worldKey = null, state = 'menu', camera = 0, stars = 0, last = 0, invulnerable = 0;
@@ -128,6 +129,7 @@ function hud() {
 }
 function menu() {
   state = 'menu'; worldKey = null; camera = 0;
+  document.body.classList.remove('playing');
   player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
   document.getElementById('levelName').textContent = 'Choose your journey';
   document.getElementById('starCount').textContent = 'Stars: 0';
@@ -139,11 +141,13 @@ function menu() {
 }
 function start(key) {
   worldKey = key; state = 'playing'; camera = 0; stars = 0; invulnerable = 0;
+  document.body.classList.add('playing');
   player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
   seen = new Set(); collected = new Set(); defeated = new Set(); particles = [];
   Object.keys(keys).forEach(k => keys[k] = false);
   document.getElementById('levelName').textContent = worlds[key].name;
   audio(); hud(); hide(); sound('tip');
+  if (W === 480 && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
 }
 function discovery(index) {
   state = 'paused'; seen.add(index); hud(); sound('tip');
