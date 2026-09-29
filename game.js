@@ -45,8 +45,8 @@ const overlay = document.getElementById('overlay');
 const card = document.getElementById('card');
 const soundToggle = document.getElementById('soundToggle');
 const keys = { left: false, right: false, jump: false };
-const W = window.innerWidth <= 680 ? 360 : 960;
-const H = W === 360 ? 510 : 450, GROUND = H - 90, END = 2820;
+const W = window.innerWidth <= 680 ? 300 : 960;
+const H = 450, GROUND = H - 90, END = 2820;
 const dpr = Math.min(window.devicePixelRatio || 1, 2);
 canvas.width = Math.round(W * dpr);
 canvas.height = Math.round(H * dpr);
@@ -170,7 +170,7 @@ function start(key) {
   Object.keys(keys).forEach(k => keys[k] = false);
   document.getElementById('levelName').textContent = worlds[key].name;
   audio(); hud(); hide(); sound('tip');
-  if (W === 360 && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
+  if (W === 300 && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
 }
 function discovery(index) {
   state = 'paused'; seen.add(index); hud(); sound('tip');
@@ -232,7 +232,7 @@ function step(dt) {
     }
   }
   if (p.y > H) { p.y = GROUND - p.h; p.vy = 0; p.onGround = true; }
-  camera = Math.max(0, Math.min(END - W + 170, p.x - W * .42));
+  camera = Math.max(0, Math.min(END - W + 170, p.x - W * (W === 300 ? .34 : .42)));
   coinPositions.forEach((coin, i) => {
     if (!collected.has(i) && Math.abs(p.x + p.w / 2 - coin.x) < 29 && Math.abs(p.y + p.h / 2 - coin.y) < 39) {
       collected.add(i); stars++; burst(coin.x, coin.y, '#f2bc50'); sound('star'); hud();
@@ -251,7 +251,9 @@ function gradient(x, y, w, h, top, bottom) {
   const g = ctx.createLinearGradient(x, y, x, y + h); g.addColorStop(0, top); g.addColorStop(1, bottom); return g;
 }
 function drawPlayer(x, y, t) {
-  ctx.fillStyle = '#172d59'; ctx.beginPath(); ctx.ellipse(x + 17, GROUND + 5, 27, 6, 0, 0, Math.PI * 2); ctx.fill();
+  const lift = Math.max(0, GROUND - y - player.h);
+  ctx.fillStyle = `rgba(23,45,89,${Math.max(.12, .42 - lift / 250)})`;
+  ctx.beginPath(); ctx.ellipse(x + 17, GROUND + 5, 27 + lift * .06, 6 + lift * .025, 0, 0, Math.PI * 2); ctx.fill();
   ctx.save(); if (invulnerable > 0 && Math.floor(t / 100) % 2) ctx.globalAlpha = .65;
   ctx.translate(x + 17, y + 20);
   ctx.scale(keys.left && !keys.right ? -1 : 1, 1);
@@ -320,6 +322,9 @@ function draw(time) {
     if (collected.has(i)) return;
     const x = coin.x - camera; if (x < -22 || x > W + 22) return;
     const y = coin.y + (reducedMotion ? 0 : Math.sin(time / 350 + i) * 4);
+    const glow = ctx.createRadialGradient(x, y, 4, x, y, 29);
+    glow.addColorStop(0, '#fff5cbba'); glow.addColorStop(1, '#f7c75c00');
+    ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(x, y, 29, 0, Math.PI * 2); ctx.fill();
     if (props.complete && props.naturalWidth) ctx.drawImage(props, 215, 402, 293, 279, x - 18, y - 18, 36, 36);
     else { ctx.fillStyle = '#eeb34e'; ctx.beginPath(); ctx.arc(x, y, 15, 0, Math.PI * 2); ctx.fill(); }
   });
