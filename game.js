@@ -45,8 +45,8 @@ const overlay = document.getElementById('overlay');
 const card = document.getElementById('card');
 const soundToggle = document.getElementById('soundToggle');
 const keys = { left: false, right: false, jump: false };
-const W = window.innerWidth <= 680 ? 480 : 960;
-const H = W === 480 ? 570 : 450, GROUND = H - 90, END = 2820;
+const W = window.innerWidth <= 680 ? 360 : 960;
+const H = W === 360 ? 510 : 450, GROUND = H - 90, END = 2820;
 const dpr = Math.min(window.devicePixelRatio || 1, 2);
 canvas.width = Math.round(W * dpr);
 canvas.height = Math.round(H * dpr);
@@ -150,13 +150,17 @@ function menu() {
 }
 function start(key) {
   worldKey = key; state = 'playing'; camera = 0; stars = 0; invulnerable = 0;
+  soundOn = true;
+  soundToggle.textContent = 'Sound on';
+  soundToggle.setAttribute('aria-pressed', 'true');
+  soundToggle.setAttribute('aria-label', 'Mute game sounds');
   document.body.classList.add('playing');
   player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
   seen = new Set(); collected = new Set(); defeated = new Set(); particles = [];
   Object.keys(keys).forEach(k => keys[k] = false);
   document.getElementById('levelName').textContent = worlds[key].name;
   audio(); hud(); hide(); sound('tip');
-  if (W === 480 && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
+  if (W === 360 && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
 }
 function discovery(index) {
   state = 'paused'; seen.add(index); hud(); sound('tip');
