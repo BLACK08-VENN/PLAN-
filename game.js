@@ -136,6 +136,15 @@ let worldKey = null, state = 'menu', camera = 0, stars = 0, last = 0, invulnerab
 let player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
 let seen = new Set(), collected = new Set(), defeated = new Set(), particles = [];
 let soundOn = true, audioContext = null;
+let jumpBuffer = 0, groundGrace = 0, accumulator = 0;
+const heldPointers = new Map();
+function resetInputs() {
+  Object.keys(keys).forEach(k => keys[k] = false);
+  heldPointers.forEach(pointers => pointers.clear());
+  document.querySelectorAll('.control').forEach(b => b.classList.remove('pressed'));
+  jumpBuffer = 0; groundGrace = 0;
+}
+function queueJump() { jumpBuffer = 7; }
 const pickupAudio = new Audio('coin-pickup.mp3');
 pickupAudio.preload = 'auto';
 pickupAudio.volume = .28;
@@ -201,8 +210,7 @@ function button(text, onClick, className = 'primary') {
   node.type = 'button'; node.addEventListener('click', onClick); return node;
 }
 function show(nodes) {
-  Object.keys(keys).forEach(k => keys[k] = false);
-  document.querySelectorAll('.control').forEach(b => b.classList.remove('pressed'));
+  resetInputs();
   card.replaceChildren(...nodes); overlay.classList.remove('hidden');
   card.scrollTop = 0;
   card.querySelector('button, a')?.focus({preventScroll:true});
@@ -214,7 +222,7 @@ function progress(n) {
 }
 function hud() {
   document.getElementById('starCount').textContent = `Stars: ${stars}`;
-  document.getElementById('stopCount').textContent = `${3 - seen.size} tips · ${defeated.size}/4 cleared`;
+  document.getElementById('stopCount').textContent = `${3 - seen.size} ideas · ${defeated.size}/4 cleared`;
   progress(Math.min(100, player.x / END * 100));
 }
 const groups = {
@@ -228,6 +236,8 @@ function menu(group = selectedGroup) {
   selectedGroup = group; state = 'menu'; worldKey = null; camera = 0;
   document.body.classList.remove('playing'); document.body.classList.add('browsing');
   document.getElementById('journeyMenu').classList.add('hidden');
+  document.getElementById('pauseGame').classList.add('hidden');
+  document.getElementById('fullScreen').classList.add('hidden');
   player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
   document.getElementById('levelName').textContent = 'Your next chapter starts here';
   document.getElementById('starCount').textContent = '10 journeys';
@@ -250,16 +260,20 @@ function menu(group = selectedGroup) {
   const lion = el('img'); lion.src = 'lion-hero.webp'; lion.alt = ''; lion.className = 'menu-lion';
   intro.append(text,lion);
   show([intro,tabs,el('p',groups[group].detail,'group-detail'),choices,
-    el('p','Move right to explore. Jump to collect stars and clear obstacles.','menu-help')]);
+    el('p','Hold a direction to move. Tap jump, or hold it to keep hopping.','menu-help')]);
+  tabs.children[Object.keys(groups).indexOf(group)].focus({preventScroll:true});
   resizeCanvas();
 }
 function start(key) {
   worldKey = key; state = 'playing'; camera = 0; stars = 0; invulnerable = 0;
   document.body.classList.remove('browsing'); document.body.classList.add('playing');
-  document.getElementById('journeyMenu').classList.remove('hidden'); resizeCanvas();
+  document.getElementById('journeyMenu').classList.remove('hidden');
+  document.getElementById('pauseGame').classList.remove('hidden');
+  if (document.fullscreenEnabled) document.getElementById('fullScreen').classList.remove('hidden');
+  resizeCanvas();
   player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
   seen = new Set(); collected = new Set(); defeated = new Set(); particles = [];
-  Object.keys(keys).forEach(k => keys[k] = false);
+  resetInputs(); last = 0; accumulator = 0;
   document.getElementById('levelName').textContent = worlds[key].name;
   audio(); hud(); hide(); sound('tip'); canvas.focus({preventScroll:true});
   if (window.innerWidth <= 680 && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
@@ -296,8 +310,10 @@ function step(dt) {
   const p = player, oldBottom = p.y + p.h, oldX = p.x;
   if (invulnerable > 0) invulnerable -= dt;
   p.vx = (Number(keys.right) - Number(keys.left)) * 4.7;
-  if (keys.jump && p.onGround) {
-    p.vy = -12.2; p.onGround = false; keys.jump = false; sound('jump');
+  groundGrace = p.onGround ? 6 : Math.max(0, groundGrace - dt);
+  jumpBuffer = Math.max(0, jumpBuffer - dt);
+  if ((keys.jump || jumpBuffer > 0) && groundGrace > 0) {
+    p.vy = -12.2; p.onGround = false; groundGrace = 0; jumpBuffer = 0; sound('jump');
   }
   p.x = Math.max(8, Math.min(END + 20, p.x + p.vx * dt));
   p.vy = Math.min(14, p.vy + .52 * dt); p.y += p.vy * dt; p.onGround = false;
@@ -451,26 +467,46 @@ function draw(time) {
   drawPlayer(player.x - camera, player.y, time);
 }
 function loop(time) {
-  const dt = Math.min(2, (time - last) / 16.67 || 1); last = time;
-  step(dt); draw(time); requestAnimationFrame(loop);
+  const elapsed = last ? Math.min(100, time - last) : 16.67; last = time;
+  if (state === 'playing') {
+    accumulator += elapsed;
+    while (accumulator >= 1000 / 60 && state === 'playing') {
+      step(1); accumulator -= 1000 / 60;
+    }
+  } else accumulator = 0;
+  draw(time); requestAnimationFrame(loop);
 }
 function bindHold(id, key) {
-  const b = document.getElementById(id);
+  const b = document.getElementById(id), pointers = new Set(); heldPointers.set(key, pointers);
   b.addEventListener('pointerdown', e => {
-    e.preventDefault(); b.setPointerCapture(e.pointerId); keys[key] = true; b.classList.add('pressed');
+    if (state !== 'playing') return;
+    e.preventDefault(); b.setPointerCapture(e.pointerId); pointers.add(e.pointerId);
+    keys[key] = true; if (key === 'jump') queueJump();
+    b.classList.add('pressed'); canvas.focus({preventScroll:true}); audio();
   });
-  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(event => b.addEventListener(event, () => {
-    keys[key] = false; b.classList.remove('pressed');
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(event => b.addEventListener(event, e => {
+    pointers.delete(e.pointerId); keys[key] = pointers.size > 0;
+    if (!pointers.size) b.classList.remove('pressed');
   }));
 }
 bindHold('left', 'left'); bindHold('right', 'right'); bindHold('jump', 'jump');
+function pauseGame() {
+  if (state !== 'playing') return;
+  state = 'suspended';
+  for (const clip of [pickupAudio, monsterHitAudio]) clip.pause();
+  show([el('p','TAKE YOUR TIME','eyebrow'),el('h2','Your journey is paused.'),
+    el('p','Your stars and progress are saved for this journey.'),
+    button('Resume playing',()=>{ hide(); resetInputs(); last = 0; accumulator = 0; state = 'playing'; audio(); canvas.focus({preventScroll:true}); }),
+    button('Choose another journey',()=>menu(),'text-button')]);
+}
 document.addEventListener('keydown', e => {
   const key = e.key.toLowerCase();
+  if (key === 'escape') { pauseGame(); return; }
   if (state !== 'playing' || /^(BUTTON|A|INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
   if (['arrowleft', 'arrowright', 'arrowup', ' ', 'a', 'd', 'w'].includes(key)) e.preventDefault();
   if (key === 'arrowleft' || key === 'a') keys.left = true;
   if (key === 'arrowright' || key === 'd') keys.right = true;
-  if (key === 'arrowup' || key === 'w' || key === ' ') keys.jump = true;
+  if (key === 'arrowup' || key === 'w' || key === ' ') { keys.jump = true; if (!e.repeat) queueJump(); }
 });
 document.addEventListener('keyup', e => {
   const key = e.key.toLowerCase();
@@ -478,13 +514,25 @@ document.addEventListener('keyup', e => {
   if (key === 'arrowright' || key === 'd') keys.right = false;
   if (key === 'arrowup' || key === 'w' || key === ' ') keys.jump = false;
 });
-window.addEventListener('blur', () => Object.keys(keys).forEach(key => keys[key] = false));
+window.addEventListener('blur', () => { resetInputs(); pauseGame(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) {resetInputs(); pauseGame();} });
 function resizeCanvas() {
+  if (document.body.classList.contains('playing')) {
+    const viewportHeight = window.visualViewport?.height || window.innerHeight;
+    document.documentElement.style.setProperty('--game-vh', `${viewportHeight}px`);
+  }
   const rect = canvas.getBoundingClientRect();
   W = Math.max(260, Math.min(1200, H * rect.width / Math.max(1,rect.height)));
   canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
   canvas.style.removeProperty('aspect-ratio'); ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 window.addEventListener('resize',resizeCanvas);
+window.visualViewport?.addEventListener('resize',resizeCanvas);
+document.addEventListener('fullscreenchange',()=>{resizeCanvas();document.getElementById('fullScreen').textContent=document.fullscreenElement?'Exit full screen':'Full screen';});
+document.getElementById('pauseGame').addEventListener('click',pauseGame);
+document.getElementById('fullScreen').addEventListener('click',async()=>{
+  try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); } catch { /* The normal layout remains playable when fullscreen is unavailable. */ }
+  canvas.focus({preventScroll:true});
+});
 document.getElementById('journeyMenu').addEventListener('click',() => menu());
 menu(); requestAnimationFrame(loop);
