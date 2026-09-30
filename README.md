@@ -1,13 +1,19 @@
 # Little Wins — ICEA LION
 
-A mobile-friendly platform game for ICEA LION lobby visitors. Players choose one of four planning journeys, collect stars, read three short discovery signs, and reach a finish screen with a first-premium discount concept.
+A mobile-friendly soft 3D platform game with ten short planning journeys across Protect, Grow, Retire and Legacy. Each journey includes three educational discoveries and a personalised product result.
 
 ## Run locally
 
-Open `index.html` in a browser, or run `python3 -m http.server 8000` here and open http://localhost:8000. There is no build step or dependency installation.
+Run `python3 -m http.server 8000` and open http://localhost:8000. No build step or dependencies are required.
 
 ## Deployment
 
-This repository is a static website. In Vercel, use the repository root, the **Other** framework preset, no build command, and no output directory. Keep `game.js`, `icea-lion-logo.png`, `lion-hero.webp`, `monsters.webp`, `environment.webp`, and `props.webp` alongside `index.html`. The artwork uses compressed WebP files for phone connections. Game sounds begin after a player chooses a journey and can be muted.
+Static site on Vercel, repository root, Other framework preset, no build command or output directory. Keep the HTML, JavaScript, WebP artwork, logo and MP3 assets together. `premium-worlds.webp` is a four-scene background atlas generated with image_gen and restyled into rounded soft 3D game scenery.
 
-The discount amount, eligible policies, and redemption terms must be confirmed by ICEA LION before a public launch. The game has no redemption validation or customer data collection.
+## Journeys
+
+Protect: motor, education, travel, home, life assurance and personal accident. Grow: money market fund and private wealth management. Retire: personal retirement scheme. Legacy: Milele Trust and estate planning. Investment, pension and trust journeys are distinct from insurance. Links lead to ICEA LION’s official pages; general catalogue links are used where a specific product destination has not been confirmed.
+
+Controls: A/D or arrows to move, Space/W/Up to jump, or touch controls. Sound starts after choosing a journey, and a mute selection is retained across journeys. Each journey has no timer. The game collects no personal data and makes no unconfirmed discount or entitlement claims.
+
+Product details, benefits and eligibility must be confirmed with ICEA LION. Game obstacles illustrate planning themes and do not represent guaranteed policy benefits.

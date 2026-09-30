@@ -2,7 +2,7 @@
 
 const worlds = {
   drive: {
-    name: 'The everyday drive', sky: ['#dfeafa', '#b9d0f1'], hill: '#a9bfe6', ground: '#31589c',
+    group: 'protect', scene: 0, summary: 'Confidence for the road ahead.', result: 'You’re planning for the road ahead.', name: 'The everyday drive', sky: ['#dfeafa', '#b9d0f1'], hill: '#a9bfe6', ground: '#31589c',
     monster: 0, monsterName: 'truck hazard', product: 'Motor Insurance', url: 'https://icealion.co.ke/motor-insurance',
     facts: [
       ['Before the road', 'Check that your motor policy is active and understand its cover, limits and exclusions before you need it.'],
@@ -11,16 +11,16 @@ const worlds = {
     ]
   },
   school: {
-    name: 'The school years', sky: ['#e9eefb', '#c9d8f4'], hill: '#bdcbea', ground: '#31589c',
+    group: 'protect', scene: 0, summary: 'Keep their next chapter in focus.', result: 'You’re planning for your child’s future.', name: 'The school years', sky: ['#e9eefb', '#c9d8f4'], hill: '#bdcbea', ground: '#31589c',
     monster: 1, monsterName: 'germ', product: 'UsomiBora Education Insurance', url: 'https://icealion.co.ke/education-insurance-usomibora-',
     facts: [
       ['Start with a goal', 'Estimate the future education cost and choose contributions you can sustain.'],
-      ['Find your rhythm', 'UsomiBora lists monthly, quarterly and annual payment options. Check the current terms before joining.'],
+      ['Find your rhythm', 'Choose a contribution schedule that fits your household and confirm the available payment options with ICEA LION.'],
       ['Read the full picture', 'Understand the benefits, life cover, contributions and what happens if payments change.']
     ]
   },
   travel: {
-    name: 'The trip away', sky: ['#d9eafb', '#b5d2ef'], hill: '#a6c0e7', ground: '#31589c',
+    group: 'protect', scene: 1, summary: 'Make room for new experiences.', result: 'You’re planning for your next adventure.', name: 'The trip away', sky: ['#d9eafb', '#b5d2ef'], hill: '#a6c0e7', ground: '#31589c',
     monster: [0, 2, 0, 2], monsterName: 'truck and storm hazards', product: 'Travel Insurance', url: 'https://icealion.co.ke/travel-insurance',
     facts: [
       ['Before take-off', 'Check the destination, travel dates and policy conditions before you leave.'],
@@ -29,12 +29,72 @@ const worlds = {
     ]
   },
   cushion: {
-    name: 'The rainy-day fund', sky: ['#e8eefa', '#cbd9f0'], hill: '#becdea', ground: '#31589c',
+    group: 'grow', scene: 2, summary: 'Build a cushion for life’s changes.', result: 'You’re making space for tomorrow.', name: 'The rainy-day fund', sky: ['#e8eefa', '#cbd9f0'], hill: '#becdea', ground: '#31589c',
     monster: 3, monsterName: 'coin gobbler', product: 'Money Market Fund', url: 'https://icealion.co.ke/money-market-fund',
     facts: [
       ['Name the goal', 'Pick a realistic target and a contribution that fits your budget.'],
       ['Look beyond returns', 'Read the fund documents for access rules, fees and risks. Past returns do not promise future results.'],
       ['Review as life changes', 'Check whether the fund still suits your needs and understand its current withdrawal process.']
+    ]
+  },
+  home: {
+    group: 'protect', scene: 0, summary: 'Care for the place you call home.', result: 'You’re planning for the home you’ve built.',
+    name: 'The place called home', sky: ['#edf1f3','#c1d5df'], hill:'#b9cbd3', ground:'#203c57',
+    monster: 2, monsterName: 'storm hazard', product: 'Home Insurance', url:'https://icealion.co.ke/domestic-insurance',
+    facts: [
+      ['More than a building', 'Think about your home and its contents separately. Check what the domestic policy covers and the limits for each section.'],
+      ['Keep a record', 'Keep an up-to-date inventory of valuable belongings, with photographs and receipts where available.'],
+      ['Match cover to your home', 'Ask about insured values, excesses and exclusions. Confirm the protection available for your circumstances.']
+    ]
+  },
+  family: {
+    group: 'protect', scene: 3, summary: 'Plan for the people who depend on you.', result: 'You’re planning for your family’s future.',
+    name: 'The people who matter', sky:['#edf0f5','#bfd0df'], hill:'#becddd', ground:'#203c57',
+    monster: 2, monsterName: 'unexpected change', product:'Life Assurance', url:'https://plan.icealion.co.ke/products',
+    facts:[
+      ['Start with your people', 'Consider who relies on your income and the commitments you would want a life policy to help support.'],
+      ['Choose the right structure', 'Term and whole-of-life policies work differently. Ask about the cover period, premiums and benefits of the plan you are considering.'],
+      ['Keep your plan current', 'Review your beneficiaries and cover when family circumstances change. Check the policy’s conditions and exclusions.']
+    ]
+  },
+  accident: {
+    group:'protect', scene:0, summary:'Prepare for an unexpected interruption.', result:'You’re planning for life’s unexpected turns.',
+    name:'Life in motion', sky:['#e5edf2','#bdd0df'], hill:'#b2c7d7', ground:'#203c57',
+    monster:0, monsterName:'accident hazard', product:'Personal Accident Insurance', url:'https://icealion.co.ke/personal-accident',
+    facts:[
+      ['An unexpected pause', 'An accident can interrupt everyday life. Personal accident insurance provides specified benefits for covered accidental injuries.'],
+      ['Know the distinction', 'Personal accident insurance is not a substitute for comprehensive medical insurance. Check the events and expenses covered.'],
+      ['Read the benefit schedule', 'Ask about benefit limits, occupation requirements and exclusions, including the terms for any temporary income support.']
+    ]
+  },
+  retirement: {
+    group:'retire', scene:2, summary:'Build freedom for your next chapter.', result:'You’re planning for a future on your terms.',
+    name:'The next chapter', sky:['#e7f0f0','#b9d3d4'], hill:'#afc6c6', ground:'#203c57',
+    monster:3, monsterName:'unplanned expense', product:'Personal Retirement Scheme', url:'https://pensions.icealion.co.ke/',
+    facts:[
+      ['Picture your future', 'Think about the life you want after work and the income you may need to support it.'],
+      ['Build a sustainable habit', 'Explore contributions that fit your income. Ask about the scheme’s fees, investment approach and access rules.'],
+      ['Plan the transition', 'Discuss retirement income options with an adviser. Pension benefits and access depend on the scheme rules and applicable requirements.']
+    ]
+  },
+  legacy: {
+    group:'legacy', scene:3, summary:'Give your intentions an enduring home.', result:'You’re planning for what you’ll leave behind.',
+    name:'A lasting legacy', sky:['#f1ede5','#d4cbbc'], hill:'#c8c4b5', ground:'#203c57',
+    monster:2, monsterName:'unexpected change', product:'Milele Trust & Estate Planning', url:'https://plan.icealion.co.ke/products/trusts',
+    facts:[
+      ['Make your intentions clear', 'Think about the people and causes you want to support, and the assets involved.'],
+      ['Understand the structure', 'Explore how a trust and estate planning may support your wishes. Ask about trustees, beneficiaries, fees and legal requirements.'],
+      ['Keep the details aligned', 'Review your arrangements as life changes. Discuss the right structure with qualified legal and financial advisers.']
+    ]
+  },
+  wealth: {
+    group:'grow', scene:3, summary:'Connect your wealth to your ambitions.', result:'You’re planning with a bigger picture in mind.',
+    name:'The bigger picture', sky:['#e8edf4','#b9c8db'], hill:'#b5c3d5', ground:'#203c57',
+    monster:3, monsterName:'unplanned expense', product:'Private Wealth Management', url:'https://plan.icealion.co.ke/products',
+    facts:[
+      ['Give your wealth a purpose', 'Identify your goals, time horizon and the funds you may need to access sooner.'],
+      ['Balance growth and risk', 'Discuss diversification and your tolerance for losses. Investment returns are not guaranteed.'],
+      ['Ask the practical questions', 'Understand fees, liquidity and the investment mandate before choosing an arrangement.']
     ]
   }
 };
@@ -45,18 +105,19 @@ const overlay = document.getElementById('overlay');
 const card = document.getElementById('card');
 const soundToggle = document.getElementById('soundToggle');
 const keys = { left: false, right: false, jump: false };
-const W = window.innerWidth <= 680 ? 300 : 960;
+let W = window.innerWidth <= 680 ? 300 : 960;
 const H = 450, GROUND = H - 90, END = 2820;
 const dpr = Math.min(window.devicePixelRatio || 1, 2);
 canvas.width = Math.round(W * dpr);
 canvas.height = Math.round(H * dpr);
-canvas.style.aspectRatio = `${W}/${H}`;
+canvas.style.removeProperty('aspect-ratio');
 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 const lionHero = new Image(); lionHero.src = 'lion-hero.webp';
 const monsterAtlas = new Image(); monsterAtlas.src = 'monsters.webp';
 const environment = new Image(); environment.src = 'environment.webp';
 const props = new Image(); props.src = 'props.webp';
+const premiumScenes = new Image(); premiumScenes.src = 'premium-worlds.webp';
 const platforms = [
   { x: 340, y: GROUND - 72, w: 160 }, { x: 810, y: GROUND - 85, w: 160 },
   { x: 1270, y: GROUND - 70, w: 170 }, { x: 1730, y: GROUND - 87, w: 160 },
@@ -135,7 +196,13 @@ function button(text, onClick, className = 'primary') {
   const node = el('button', text, className);
   node.type = 'button'; node.addEventListener('click', onClick); return node;
 }
-function show(nodes) { card.replaceChildren(...nodes); overlay.classList.remove('hidden'); }
+function show(nodes) {
+  Object.keys(keys).forEach(k => keys[k] = false);
+  document.querySelectorAll('.control').forEach(b => b.classList.remove('pressed'));
+  card.replaceChildren(...nodes); overlay.classList.remove('hidden');
+  card.scrollTop = 0;
+  card.querySelector('button, a')?.focus({preventScroll:true});
+}
 function hide() { overlay.classList.add('hidden'); }
 function progress(n) {
   document.getElementById('fill').style.width = n + '%';
@@ -146,48 +213,72 @@ function hud() {
   document.getElementById('stopCount').textContent = `${3 - seen.size} tips · ${defeated.size}/4 cleared`;
   progress(Math.min(100, player.x / END * 100));
 }
-function menu() {
-  state = 'menu'; worldKey = null; camera = 0;
-  document.body.classList.remove('playing');
+const groups = {
+  protect: {name:'Protect', detail:'The people, places and experiences you value.'},
+  grow: {name:'Grow', detail:'Make a plan for the ambitions ahead.'},
+  retire: {name:'Retire', detail:'Create room for a future on your terms.'},
+  legacy: {name:'Legacy', detail:'Plan for what continues beyond you.'}
+};
+let selectedGroup = 'protect';
+function menu(group = selectedGroup) {
+  selectedGroup = group; state = 'menu'; worldKey = null; camera = 0;
+  document.body.classList.remove('playing'); document.body.classList.add('browsing');
+  document.getElementById('journeyMenu').classList.add('hidden');
   player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
-  document.getElementById('levelName').textContent = 'Choose your journey';
-  document.getElementById('starCount').textContent = 'Stars: 0';
-  document.getElementById('stopCount').textContent = '3 tips · 4 monsters'; progress(0);
+  document.getElementById('levelName').textContent = 'Your next chapter starts here';
+  document.getElementById('starCount').textContent = '10 journeys';
+  document.getElementById('stopCount').textContent = 'No timer'; progress(0);
+  const tabs = el('div', undefined, 'world-tabs'); tabs.setAttribute('aria-label','Planning worlds');
+  Object.entries(groups).forEach(([key, item]) => {
+    const tab = button(item.name, () => menu(key), 'world-tab' + (key === group ? ' active' : ''));
+    tab.setAttribute('aria-pressed', String(key === group)); tabs.append(tab);
+  });
   const choices = el('div', undefined, 'choices');
-  Object.entries(worlds).forEach(([key, world]) => choices.append(button(world.name, () => start(key), 'choice')));
-  show([el('p', 'PICK A JOURNEY', 'eyebrow'), el('h2', 'Where shall we go?'),
-    el('p', 'Move right. Jump on the little monsters to clear them, and collect stars. There is no timer.'), choices]);
+  Object.entries(worlds).filter(([,world]) => world.group === group).forEach(([key, world], i) => {
+    const choice = button('', () => start(key), 'choice');
+    choice.append(el('span', String(i + 1).padStart(2,'0'), 'choice-number'),
+      el('span',world.name,'choice-title'),el('span',world.summary,'choice-description'));
+    choices.append(choice);
+  });
+  const intro = el('div',undefined,'menu-intro');
+  const text = el('div'); text.append(el('p','WHAT’S YOUR PLAN?','eyebrow'),el('h2','A little play. A bigger picture.'),
+    el('p','Choose a journey. Collect stars and discover three ideas along the way.'));
+  const lion = el('img'); lion.src = 'lion-hero.webp'; lion.alt = ''; lion.className = 'menu-lion';
+  intro.append(text,lion);
+  show([intro,tabs,el('p',groups[group].detail,'group-detail'),choices,
+    el('p','Move right to explore. Jump to collect stars and clear obstacles.','menu-help')]);
+  resizeCanvas();
 }
 function start(key) {
   worldKey = key; state = 'playing'; camera = 0; stars = 0; invulnerable = 0;
-  soundOn = true;
-  soundToggle.textContent = 'Sound on';
-  soundToggle.setAttribute('aria-pressed', 'true');
-  soundToggle.setAttribute('aria-label', 'Mute game sounds');
-  document.body.classList.add('playing');
+  document.body.classList.remove('browsing'); document.body.classList.add('playing');
+  document.getElementById('journeyMenu').classList.remove('hidden'); resizeCanvas();
   player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
   seen = new Set(); collected = new Set(); defeated = new Set(); particles = [];
   Object.keys(keys).forEach(k => keys[k] = false);
   document.getElementById('levelName').textContent = worlds[key].name;
-  audio(); hud(); hide(); sound('tip');
-  if (W === 300 && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
+  audio(); hud(); hide(); sound('tip'); canvas.focus({preventScroll:true});
+  if (window.innerWidth <= 680 && typeof window.scrollTo === 'function') window.scrollTo(0, 0);
 }
 function discovery(index) {
   state = 'paused'; seen.add(index); hud(); sound('tip');
   const [title, detail] = worlds[worldKey].facts[index];
   show([el('p', `DISCOVERY ${index + 1} OF 3`, 'eyebrow'), el('h2', title),
-    el('div', detail, 'note'), button('Keep playing', () => { hide(); state = 'playing'; })]);
+    el('div', detail, 'note'), button('Keep playing', () => { hide(); state = 'playing'; canvas.focus({preventScroll:true}); })]);
 }
 function finish() {
   state = 'finished'; progress(100); sound('finish');
   const world = worlds[worldKey], row = el('div', undefined, 'actions');
-  const link = el('a', 'Explore on ICEA LION', 'primary');
+  const link = el('a', 'Explore this plan', 'primary');
   link.href = world.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
-  row.append(link, button('Play another', menu, 'secondary'));
-  show([el('p', 'YOU REACHED THE FINISH', 'eyebrow'), el('h2', 'You win!'),
-    el('p', `You collected ${stars} stars and cleared ${defeated.size} of 4 little monsters.`),
-    el('div', 'First-premium discount unlocked! Show this screen to ICEA LION staff to ask about the offer. The discount amount, eligible products and redemption terms are set by ICEA LION.', 'note'),
-    el('p', `Interested in ${world.product}? See the product details before deciding.`), row]);
+  const adviser = el('a','Speak to an adviser','secondary');
+  adviser.href = 'https://plan.icealion.co.ke/'; adviser.target = '_blank'; adviser.rel = 'noopener noreferrer';
+  row.append(link, adviser);
+  show([el('p', 'JOURNEY COMPLETE', 'eyebrow'), el('h2', world.result),
+    el('p', `${stars} stars collected · ${defeated.size} obstacles cleared · 3 ideas discovered`, 'result-score'),
+    el('div',world.product,'note'),
+    el('p', 'Take the next step at your own pace. Explore the product details or discuss your goals with ICEA LION.'),row,
+    button('Choose another journey', () => menu(), 'text-button')]);
 }
 function burst(x, y, color) {
   if (reducedMotion) return;
@@ -232,7 +323,7 @@ function step(dt) {
     }
   }
   if (p.y > H) { p.y = GROUND - p.h; p.vy = 0; p.onGround = true; }
-  camera = Math.max(0, Math.min(END - W + 170, p.x - W * (W === 300 ? .34 : .42)));
+  camera = Math.max(0, Math.min(END - W + 170, p.x - W * (W < 500 ? .34 : .42)));
   coinPositions.forEach((coin, i) => {
     if (!collected.has(i) && Math.abs(p.x + p.w / 2 - coin.x) < 29 && Math.abs(p.y + p.h / 2 - coin.y) < 39) {
       collected.add(i); stars++; burst(coin.x, coin.y, '#f2bc50'); sound('star'); hud();
@@ -281,7 +372,13 @@ function drawMonster(x, y, type, t) {
 function draw(time) {
   const world = worlds[worldKey] || worlds.drive;
   ctx.fillStyle = gradient(0, 0, W, H, ...world.sky); ctx.fillRect(0, 0, W, H);
-  if (environment.complete && environment.naturalWidth) {
+  if (premiumScenes.complete && premiumScenes.naturalWidth) {
+    const panelW = premiumScenes.naturalWidth / 2, panelH = premiumScenes.naturalHeight / 2;
+    const scene = world.scene || 0;
+    const sourceWidth = Math.min(panelW, panelH * W / (GROUND + 20));
+    const sourceX = scene % 2 * panelW + (panelW - sourceWidth) * Math.max(0, Math.min(1, camera / Math.max(1,END - W + 170)));
+    ctx.drawImage(premiumScenes, sourceX, Math.floor(scene / 2) * panelH, sourceWidth, panelH, 0, 0, W, GROUND + 20);
+  } else if (environment.complete && environment.naturalWidth) {
     const sourceWidth = Math.min(environment.naturalWidth, environment.naturalHeight * W / (GROUND + 20));
     const travel = Math.max(1, END - W + 170);
     const sourceX = (environment.naturalWidth - sourceWidth) * Math.max(0, Math.min(1, camera / travel));
@@ -293,7 +390,7 @@ function draw(time) {
       ctx.fillStyle = world.hill; ctx.beginPath(); ctx.ellipse(x, GROUND + 42, 260, 145, 0, Math.PI, 0); ctx.fill();
     }
   }
-  ctx.fillStyle = gradient(0, GROUND, W, H - GROUND, '#5577b6', '#123673'); ctx.fillRect(0, GROUND, W, H - GROUND);
+  ctx.fillStyle = gradient(0, GROUND, W, H - GROUND, '#526a7b', world.ground); ctx.fillRect(0, GROUND, W, H - GROUND);
   ctx.fillStyle = '#f0ca7a'; ctx.fillRect(0, GROUND, W, 9);
   for (let i = 0; i < Math.ceil(W / 46) + 1; i++) {
     const x = i * 46 - camera % 46;
@@ -360,6 +457,7 @@ function bindHold(id, key) {
 bindHold('left', 'left'); bindHold('right', 'right'); bindHold('jump', 'jump');
 document.addEventListener('keydown', e => {
   const key = e.key.toLowerCase();
+  if (state !== 'playing' || /^(BUTTON|A|INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
   if (['arrowleft', 'arrowright', 'arrowup', ' ', 'a', 'd', 'w'].includes(key)) e.preventDefault();
   if (key === 'arrowleft' || key === 'a') keys.left = true;
   if (key === 'arrowright' || key === 'd') keys.right = true;
@@ -372,4 +470,12 @@ document.addEventListener('keyup', e => {
   if (key === 'arrowup' || key === 'w' || key === ' ') keys.jump = false;
 });
 window.addEventListener('blur', () => Object.keys(keys).forEach(key => keys[key] = false));
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  W = Math.max(260, Math.min(1200, H * rect.width / Math.max(1,rect.height)));
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  canvas.style.removeProperty('aspect-ratio'); ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize',resizeCanvas);
+document.getElementById('journeyMenu').addEventListener('click',() => menu());
 menu(); requestAnimationFrame(loop);
