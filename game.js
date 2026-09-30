@@ -127,6 +127,10 @@ const blocks = [490, 1010, 1810, 2450];
 const coinPositions = [190, 280, 370, 440, 575, 690, 850, 930, 1080, 1170, 1330, 1410, 1550, 1660, 1780, 1870, 2020, 2140, 2280, 2370, 2500, 2620]
   .map((x, i) => ({ x, y: i % 4 >= 2 ? GROUND - 113 : GROUND - 75 }));
 const stops = [650, 1450, 2250];
+// Keep collectibles above the sign faces so every discovery label stays readable.
+coinPositions.forEach(coin => {
+  if (stops.some(stop => Math.abs(coin.x - (stop + 29)) < 65)) coin.y = GROUND - 155;
+});
 const monsterPositions = [760, 1200, 1970, 2580];
 let worldKey = null, state = 'menu', camera = 0, stars = 0, last = 0, invulnerable = 0;
 let player = { x: 75, y: GROUND - 48, w: 34, h: 48, vx: 0, vy: 0, onGround: true };
@@ -411,9 +415,14 @@ function draw(time) {
   }
   for (let i = 0; i < stops.length; i++) {
     const x = stops[i] - camera; if (x < -110 || x > W + 20) continue;
-    if (props.complete && props.naturalWidth) ctx.drawImage(props, 756, 392, 287, 334, x - 20, GROUND - 130, 98, 130);
+    const hasSignArtwork = props.complete && props.naturalWidth;
+    if (hasSignArtwork) ctx.drawImage(props, 756, 392, 287, 334, x - 20, GROUND - 130, 98, 130);
     else { rounded(x + 3, GROUND - 106, 7, 107, 3, '#143374'); rounded(x - 21, GROUND - 123, 95, 42, 9, '#fff8e8'); }
-    ctx.fillStyle = '#113885'; ctx.font = 'bold 16px system-ui'; ctx.fillText('IDEA ' + (i + 1), x - 7, GROUND - 96);
+    ctx.save();
+    ctx.fillStyle = '#113885'; ctx.font = 'bold 13px system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('IDEA ' + (i + 1), x + (hasSignArtwork ? 29 : 26.5), GROUND - (hasSignArtwork ? 82 : 102), 70);
+    ctx.restore();
   }
   coinPositions.forEach((coin, i) => {
     if (collected.has(i)) return;
